@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>كارت التواصل | X5</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0A0A0A;
+    --primary:#1A1A1A;
+    --accent:#F5C518;
+    --accent-dark:#D4A80F;
+    --ice:#FFF8E1;
+    --white:#FFFFFF;
+    --slate:#8A8A8A;
+    --line: rgba(245,197,24,0.2);
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{
+    min-height:100%;
+    background:#0A0A0A;
+  }
+
+  body{
+    min-height:100vh;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Tajawal', sans-serif;
+    padding:40px 16px;
+    position:relative;
+    overflow-x:hidden;
+    background:
+      radial-gradient(120% 100% at 15% 10%, #1A1A1A 0%, transparent 55%),
+      radial-gradient(120% 100% at 90% 90%, #0D0D0D 0%, transparent 55%),
+      #0A0A0A;
+  }
+
+  #bg-canvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:0;
+    display:block;
+  }
+
+  .stage{
+    position:relative;
+    z-index:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+  }
+
+  .card{
+    position:relative;
+    width:520px;
+    max-width:92vw;
+    background: radial-gradient(120% 90% at 100% 0%, #1A1A1A 0%, #0A0A0A 45%, #050505 100%);
+    border-radius:28px;
+    overflow:hidden;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.7), 0 8px 20px -8px rgba(0,0,0,0.5), 0 0 40px rgba(245,197,24,0.08);
+    padding:60px 40px 52px;
+    display:flex;
+    flex-direction:column;
+    color:var(--white);
+    border:1px solid rgba(245,197,24,0.15);
+  }
+
+  /* signature: connective node lattice, quiet, upper-right */
+  .lattice{
+    position:absolute;
+    top:-40px;
+    left:-40px;
+    width:260px;
+    height:260px;
+    opacity:0.55;
+    pointer-events:none;
+  }
+
+  .card::after{
+    content:"";
+    position:absolute;
+    right:-90px;
+    bottom:-90px;
+    width:280px;
+    height:280px;
+    border-radius:50%;
+    background: radial-gradient(circle, rgba(245,197,24,0.2) 0%, rgba(245,197,24,0) 70%);
+    pointer-events:none;
+  }
+
+  .brandmark{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    z-index:2;
+  }
+
+  .brandmark .dot{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 0 5px rgba(62,142,247,0.18);
+    flex-shrink:0;
+  }
+
+  .brandmark span{
+    font-family:'Cairo', sans-serif;
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:1px;
+    color:var(--accent);
+    text-transform:uppercase;
+  }
+
+  .company{
+    margin-top:26px;
+    font-family:'Cairo', sans-serif;
+    font-weight:800;
+    font-size:40px;
+    line-height:1.25;
+    text-align:center;
+    z-index:2;
+  }
+
+  .tagline{
+    margin-top:10px;
+    font-size:15px;
+    font-weight:400;
+    color:#B9C7DE;
+    line-height:1.7;
+    text-align:center;
+    z-index:2;
+  }
+
+  .divider{
+    margin:28px 0 24px;
+    height:1px;
+    width:100%;
+    background: linear-gradient(90deg, rgba(245,197,24,0.3), transparent);
+    z-index:2;
+  }
+
+  .contact-list{
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    z-index:2;
+  }
+
+  .contact-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+
+  a.contact-row{
+    text-decoration:none;
+    color:inherit;
+    transition:transform 0.15s ease;
+  }
+
+  a.contact-row:hover{
+    transform:translateX(-3px);
+  }
+
+  html[dir="rtl"] a.contact-row:hover{
+    transform:translateX(3px);
+  }
+
+  .icon-badge{
+    width:38px;
+    height:38px;
+    border-radius:11px;
+    background:rgba(245,197,24,0.12);
+    border:1px solid rgba(245,197,24,0.25);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+    transition:background 0.15s ease, border-color 0.15s ease;
+  }
+
+  a.contact-row:hover .icon-badge{
+    background:var(--accent);
+    border-color:var(--accent);
+  }
+
+  .icon-badge svg{
+    width:18px;
+    height:18px;
+    stroke:var(--accent);
+    fill:none;
+    transition:stroke 0.15s ease;
+  }
+
+  a.contact-row:hover .icon-badge svg{
+    stroke:var(--white);
+  }
+
+  .contact-text{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+
+  .contact-text b{
+    font-weight:600;
+    font-size:15px;
+    color:var(--white);
+    direction:ltr;
+    text-align:right;
+    unicode-bidi:plaintext;
+    transition:color 0.15s ease;
+  }
+
+  a.contact-row:hover .contact-text b{
+    color:var(--accent);
+  }
+
+  .contact-text small{
+    font-size:11.5px;
+    color:var(--slate);
+    font-weight:400;
+  }
+
+  .socials{
+    margin-top:30px;
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    z-index:2;
+  }
+
+  .social-pill{
+    width:56px;
+    height:56px;
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:16px;
+    background:var(--accent);
+    color:var(--ink);
+    text-decoration:none;
+    transition:transform 0.15s ease, background 0.15s ease;
+  }
+
+  .social-pill:hover{
+    background:var(--accent-dark);
+    transform:translateY(-2px);
+  }
+
+  .social-pill:hover svg{
+    fill:var(--white);
+  }
+
+  .social-pill svg{
+    width:24px;
+    height:24px;
+    fill:var(--ink);
+  }
+
+  .footer-note{
+    margin-top:18px;
+    text-align:center;
+    font-size:11px;
+    color:#666;
+    letter-spacing:0.5px;
+  }
+
+  @media (max-width:480px){
+    body{
+      padding:0;
+      align-items:stretch;
+    }
+    .stage{
+      min-height:100vh;
+      min-height:100dvh;
+      justify-content:center;
+      padding:24px 16px;
+    }
+    .card{
+      width:100%;
+      max-width:100%;
+      min-height:calc(100vh - 48px);
+      min-height:calc(100dvh - 48px);
+      border-radius:0;
+      padding:32px 24px 28px;
+    }
+    .company{ font-size:32px; }
+    .social-pill{ width:42px; height:42px; }
+    .footer-note{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="stage">
+  <div class="card">
+    <svg class="lattice" viewBox="0 0 260 260">
+      <g stroke="#F5C518" stroke-width="1">
+        <line x1="30" y1="40" x2="90" y2="90" />
+        <line x1="90" y1="90" x2="150" y2="50" />
+        <line x1="90" y1="90" x2="70" y2="160" />
+        <line x1="150" y1="50" x2="210" y2="100" />
+      </g>
+      <g fill="#F5C518">
+        <circle cx="30" cy="40" r="4"/>
+        <circle cx="90" cy="90" r="5"/>
+        <circle cx="150" cy="50" r="4"/>
+        <circle cx="70" cy="160" r="3.5"/>
+        <circle cx="210" cy="100" r="3.5"/>
+      </g>
+    </svg>
+
+    <div class="brandmark">
+      <img src="7d44c11f-3a32-465e-87f6-5a292fa51517.jpg" alt="شعار X5" style="width:64px;height:64px;border-radius:12px;object-fit:cover;">
+      <span>ستايلك يبدأ من هنا 💪</span>
+     
+  
+    </div>
+
+    <div class="company">X5 Store</div>
+
+    <div class="divider"></div>
+
+    <div class="contact-list">
+      <a class="contact-row is-link" href="https://wa.me/+201004210052" target="_blank" rel="noopener noreferrer">
+        <span class="icon-badge">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </span>
+        <div class="contact-text">
+          <b>+20 100 421 0052</b>
+          <small>واتساب — X5</small>
+        </div>
+      </a>
+
+      <div class="contact-row">
+        <span class="icon-badge">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </span>
+        <div class="contact-text">
+          <b>أبو المطامير، البحيرة</b>
+          <small>X5 STORE — فرع أبو المطامير</small>
+        </div>
+      </div>
+
+      <a class="contact-row is-link" href="https://www.google.com/maps?q=X5+STORE%D8%8C+%D8%A7%D8%A8%D9%88%D8%A7%D9%84%D9%85%D8%B7%D8%A7%D9%85%D9%8A%D8%B1" target="_blank" rel="noopener noreferrer">
+        <span class="icon-badge">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </span>
+        <div class="contact-text">
+          <b>X5 STORE</b>
+          <small>موقعنا على خرائط جوجل</small>
+        </div>
+      </a>
+    </div>
+
+    <div class="socials">
+      <a class="social-pill" href="https://www.facebook.com/share/1NsWZHpY4Y/" target="_blank" rel="noopener noreferrer" aria-label="فيسبوك">
+        <svg viewBox="0 0 24 24"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06C2 17.08 5.66 21.23 10.44 22v-7.03H7.9v-2.91h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.91h-2.34V22C18.34 21.23 22 17.08 22 12.06z"/></svg>
+      </a>
+      <a class="social-pill" href="https://www.instagram.com/x5_aboelmatamer" target="_blank" rel="noopener noreferrer" aria-label="إنستجرام">
+        <svg viewBox="0 0 24 24"><path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm-5 2.5A5.5 5.5 0 1 1 6.5 12 5.5 5.5 0 0 1 12 6.5zm0 2A3.5 3.5 0 1 0 15.5 12 3.5 3.5 0 0 0 12 8.5z"/></svg>
+      </a>
+      <a class="social-pill" href="https://www.tiktok.com/@mahrous666" target="_blank" rel="noopener noreferrer" aria-label="تيك توك">
+        <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1 0-5.78 2.92 2.92 0 0 1 .88.13V9.03a6.29 6.29 0 0 0-.88-.07 6.35 6.35 0 0 0-6.35 6.35 6.35 6.35 0 0 0 6.35 6.35 6.35 6.35 0 0 0 6.35-6.35V8.75a8.18 8.18 0 0 0 4.76 1.52V6.83a4.85 4.85 0 0 1-.19-.14z"/></svg>
+      </a>
+      <a class="social-pill" href="https://wa.me/+201004210052" target="_blank" rel="noopener noreferrer" aria-label="واتساب">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+      </a>
+    </div>
+
+  </div>
+
+  <div class="footer-note">تصميم كارت التواصل الرسمي — قابل للتعديل بالكامل</div>
+</div>
+
+<script>
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let w, h, dpr;
+  let nodes = [];
+
+  const PALETTE = ['#F5C518', '#D4A80F', '#FFE082'];
+  const LINK_DIST = 150;
+  const NODE_COUNT_DENSITY = 16000; // px^2 per node
+
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = window.innerWidth;
+    h = window.innerHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    initNodes();
+  }
+
+  function initNodes(){
+    const count = Math.max(24, Math.min(90, Math.floor((w * h) / NODE_COUNT_DENSITY)));
+    nodes = new Array(count).fill(0).map(() => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.18,
+      vy: (Math.random() - 0.5) * 0.18,
+      r: Math.random() * 1.6 + 0.8,
+      c: PALETTE[Math.floor(Math.random() * PALETTE.length)]
+    }));
+  }
+
+  function step(){
+    ctx.clearRect(0, 0, w, h);
+
+    for (const n of nodes){
+      n.x += n.vx;
+      n.y += n.vy;
+      if (n.x < 0 || n.x > w) n.vx *= -1;
+      if (n.y < 0 || n.y > h) n.vy *= -1;
+    }
+
+    for (let i = 0; i < nodes.length; i++){
+      for (let j = i + 1; j < nodes.length; j++){
+        const a = nodes[i], b = nodes[j];
+        const dx = a.x - b.x, dy = a.y - b.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < LINK_DIST){
+          ctx.strokeStyle = `rgba(245,197,24,${(1 - dist / LINK_DIST) * 0.16})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    for (const n of nodes){
+      ctx.beginPath();
+      ctx.fillStyle = n.c;
+      ctx.globalAlpha = 0.55;
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    if (!reduceMotion) requestAnimationFrame(step);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  step();
+  if (reduceMotion) step(); // draw a single static frame
+})();
+</script>
+
+</body>
+</html>
