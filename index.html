@@ -284,23 +284,28 @@
     body{
       padding:0;
       align-items:stretch;
+      justify-content:stretch;
     }
     .stage{
+      width:100%;
       min-height:100vh;
       min-height:100dvh;
-      justify-content:center;
-      padding:24px 16px;
+      justify-content:stretch;
+      padding:0;
+      gap:0;
     }
     .card{
       width:100%;
       max-width:100%;
-      min-height:calc(100vh - 48px);
-      min-height:calc(100dvh - 48px);
+      min-height:100vh;
+      min-height:100dvh;
       border-radius:0;
-      padding:32px 24px 28px;
+      padding:40px 24px 36px;
+      box-shadow:none;
+      border:none;
     }
     .company{ font-size:32px; }
-    .social-pill{ width:42px; height:42px; }
+    .social-pill{ width:48px; height:48px; }
     .footer-note{ display:none; }
   }
 </style>
